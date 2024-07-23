@@ -1,0 +1,6 @@
+bin/
+obj/
+ReviewApp.csproj.user
+ReviewApp.http
+
+local.md
