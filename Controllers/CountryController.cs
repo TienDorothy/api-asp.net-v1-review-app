@@ -65,7 +65,7 @@ namespace ReviewApp.Controllers
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public IActionResult CreateContry([FromBody] CountryDto countryCreate)
+        public IActionResult CreateCountry([FromBody] CountryDto countryCreate)
         {
             if (countryCreate == null) return BadRequest(ModelState);
 
@@ -93,6 +93,37 @@ namespace ReviewApp.Controllers
             }
             return Ok("Successfully created");
 
+        }
+
+        [HttpPut("{countryId}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult CreateCountry(
+            int countryId,
+            [FromBody] CountryDto countryUpdate)
+        {
+            if (countryUpdate == null)
+                return BadRequest(ModelState);
+
+            if (countryId != countryUpdate.Id)
+                return BadRequest(ModelState);
+
+            if (!_countryRepository.CountryExists(countryId))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var countryMap = _mapper.Map<Country>(countryUpdate);
+
+            if (!_countryRepository.UpdateCountry(countryMap))
+            {
+                ModelState.AddModelError("", "Something went wrong updating category");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
         }
 
     }

@@ -6,7 +6,7 @@ using ReviewApp.Models;
 
 namespace ReviewApp.Repository
 {
-    public class ReviewerRepository: IReviewerRepository
+    public class ReviewerRepository : IReviewerRepository
     {
         private readonly DataContext _context;
         private readonly IMapper _mapper;
@@ -48,5 +48,10 @@ namespace ReviewApp.Repository
             return Save();
         }
 
+        public bool UpdateReviewer(Reviewer reviewer)
+        {
+            _context.Update(reviewer);
+            return Save();
+        }
     }
 }
