@@ -33,7 +33,7 @@ ReviewApp is an application for managing Pokémon reviews. It is built with ASP.
 
    ```sh
    git clone https://github.com/TienDorothy/api-asp.net-v1-review-app.git
-   cd ReviewApp
+   cd api-asp.net-v1-review-app/
    ```
 
 2. **Install the required packages:**
