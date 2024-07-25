@@ -12,7 +12,8 @@ namespace ReviewApp.Controllers
     {
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
-        public CategoryController( ICategoryRepository categoryRepository, IMapper mapper )
+        public CategoryController(ICategoryRepository categoryRepository,
+            IMapper mapper)
         {
             _categoryRepository = categoryRepository;
             _mapper = mapper;
@@ -31,9 +32,9 @@ namespace ReviewApp.Controllers
 
         [HttpGet("{categoryId}")]
         [ProducesResponseType(200, Type = typeof(Category))]
-        public IActionResult GetCategory (int categoryId)
+        public IActionResult GetCategory(int categoryId)
         {
-            if(! _categoryRepository.CategoryExists(categoryId)) return NotFound ();
+            if (!_categoryRepository.CategoryExists(categoryId)) return NotFound();
 
             var category = _mapper.Map<CategoryDto>(_categoryRepository.GetCategory(categoryId));
 
@@ -41,15 +42,15 @@ namespace ReviewApp.Controllers
 
             return Ok(category);
             {
-                
+
             }
         }
 
         [HttpGet("pokemon/{categoryId}")]
-        [ProducesResponseType (200, Type = typeof(IEnumerable<Pokemon>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Pokemon>))]
         [ProducesResponseType(400)]
 
-        public IActionResult GetPokemonByCategory (int categoryId)
+        public IActionResult GetPokemonByCategory(int categoryId)
         {
             if (!_categoryRepository.CategoryExists(categoryId)) return NotFound();
 
@@ -59,6 +60,36 @@ namespace ReviewApp.Controllers
             return Ok(pokemons);
 
 
+
+        }
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateCategory([FromBody] CategoryDto categoryCreate)
+        {
+            if (categoryCreate == null) return BadRequest(ModelState);
+
+            var category = _categoryRepository.GetCategories()
+                .Where(c => c.Name.Trim().ToUpper() == categoryCreate.Name.TrimEnd().ToUpper())
+                .FirstOrDefault();
+            if (category != null)
+            {
+                ModelState.AddModelError("", "Category already exists");
+                return StatusCode(422, ModelState); 
+            }
+
+            if (ModelState.IsValid) return BadRequest(ModelState);
+
+            var categogyMap = _mapper.Map<Category>(categoryCreate);
+
+            if(!_categoryRepository.CreateCategory(categogyMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+
+            }
+
+            return Ok("Sucessfull created");
 
         }
 

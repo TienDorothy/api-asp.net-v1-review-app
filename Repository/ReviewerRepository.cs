@@ -36,5 +36,17 @@ namespace ReviewApp.Repository
         {
             return _context.Reviewers.Any(r => r.Id == reviewerId);
         }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
+        }
+        public bool CreateReviewer(Reviewer reviewer)
+        {
+            _context.Add(reviewer);
+            return Save();
+        }
+
     }
 }

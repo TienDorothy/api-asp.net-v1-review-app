@@ -9,12 +9,12 @@ namespace ReviewApp.Repository
         private readonly DataContext _context;
         public PokemonRepository(DataContext context)
         {
-            _context= context;
+            _context = context;
         }
-        
-        public ICollection<Pokemon> GetPokemons ()
+
+        public ICollection<Pokemon> GetPokemons()
         {
-            return _context.Pokemons.OrderBy(p=> p.Id).ToList();
+            return _context.Pokemons.OrderBy(p => p.Id).ToList();
         }
 
         public Pokemon GetPokemon(int pokeId)
@@ -34,17 +34,45 @@ namespace ReviewApp.Repository
             if (review.Count() <= 0)
                 return 0;
 
-            return (decimal)review.Sum(r=> r.Rating)/ review.Count();
+            return (decimal)review.Sum(r => r.Rating) / review.Count();
         }
 
         public bool PokemonExists(int pokeId)
         {
-            return _context.Pokemons.Any(p=> p.Id == pokeId);
+            return _context.Pokemons.Any(p => p.Id == pokeId);
         }
-        
-        //bool CreatePokemon(int ownerId, int categoryId, Pokemon pokemon) 
+
+        public bool CreatePokemon(int ownerId, int categoryId, Pokemon pokemon)
+        {
+            var pokemonOwnerEntity = _context.Owners.Where(o => o.Id == ownerId)
+                .FirstOrDefault();
+            var category = _context.Categories.Where(c => c.Id == categoryId).FirstOrDefault();
+
+            var pokemonOwner = new PokemonOwner()
+            {
+                Owner = pokemonOwnerEntity,
+                Pokemon = pokemon,
+            };
+            _context.Add(pokemonOwner);
+
+            var pokemonCategory = new PokemonCategory()
+            {
+                Category = category,
+                Pokemon = pokemon,
+            };
+            _context.Add(pokemonCategory);
+
+            _context.Add(pokemon);
+
+            return Save();
+        }
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
+        }
+
         //bool UpdatePokemon(int ownerId, int categoryId, Pokemon pokemon);
         //bool DeletePokemon(Pokemon pokemon);
-        //bool Save();
     }
 }

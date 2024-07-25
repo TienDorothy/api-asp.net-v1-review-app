@@ -11,5 +11,9 @@ namespace ReviewApp.Interfaces
         Country GetCountryByOwner(int ownerId);
 
         ICollection<Owner> GetOwnersFromACountry(int countryId);
+
+        bool CreateCountry(Country country);
+
+        bool Save();
     }
 }

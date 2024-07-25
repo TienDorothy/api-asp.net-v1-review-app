@@ -9,26 +9,37 @@ namespace ReviewApp.Repository
         private DataContext _context;
         public CategoryRepository(DataContext context)
         {
-            _context= context;
+            _context = context;
         }
-       public bool CategoryExists(int id)
+        public bool CategoryExists(int id)
         {
             return _context.Categories.Any(c => c.Id == id);
         }
 
-       public ICollection<Category> GetCategories()
+        public ICollection<Category> GetCategories()
         {
             return _context.Categories.ToList();
         }
 
         public Category GetCategory(int id)
         {
-            return _context.Categories.Where(c => c.Id == id).FirstOrDefault(); 
+            return _context.Categories.Where(c => c.Id == id).FirstOrDefault();
         }
 
-       public  ICollection<Pokemon> GetPokemonByCategory(int categoryId)
+        public ICollection<Pokemon> GetPokemonByCategory(int categoryId)
         {
-            return _context.PokemonCategories.Where(pc=> pc.CategoryId == categoryId).Select(pc=> pc.Pokemon).ToList();
+            return _context.PokemonCategories.Where(pc => pc.CategoryId == categoryId).Select(pc => pc.Pokemon).ToList();
+        }
+
+        public bool CreateCategory(Category category)
+        {
+            _context.Add(category);
+            return Save();
+        }
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
         }
 
     }
