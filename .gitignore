@@ -1,6 +1,7 @@
+# Binaries
 bin/
 obj/
-ReviewApp.csproj.user
-ReviewApp.http
 
+# User-specific files
+*.csproj.user
 local.md

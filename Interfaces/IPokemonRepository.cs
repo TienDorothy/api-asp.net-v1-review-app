@@ -13,6 +13,6 @@ namespace ReviewApp.Interfaces
         bool Save();
 
         bool UpdatePokemon(int ownerId, int categoryId, Pokemon pokemon);
-        //bool DeletePokemon(Pokemon pokemon);
+        bool DeletePokemon(Pokemon pokemon);
     }
 }
